@@ -3,17 +3,18 @@ from tkinter import filedialog
 from tkinter import ttk
 from PIL import ImageTk , Image
 from ToDoDB import tododb
-import configparser  as cfg
+import configparser 
 import time
 import os
 
 class background():
     def __init__( self ):
-        self.wallpaperfn = WallPaperFN
-        self.canvas    = Canvas( root , width = int( resx ) , height = int( resy ) )
+        self.wallpaperfn = wallpaperfn
+        self.canvas      = Canvas( root , width = int( resx ) , height = int( resy ) )
         self.canvas.place( x = 0 , y = 0 )
-        self.text      = self.canvas.create_text( 13 , 0 , text = "" , font = ( "Gill Sans MT" , 60 , "bold" ) , anchor = "nw" , fill = "white" )
-        self.image     = None
+        self.text        = self.canvas.create_text( 13 , 0 , text = "" , font = ( "Gill Sans MT" , 60 , "bold" ) , anchor = "nw" , fill = "white" )
+        self.image       = None
+        print( self.text ) 
     
     def wallpaperplace( self ):
         try:
@@ -32,7 +33,8 @@ class background():
     def clock( self ):
         clockt = time.strftime( "%H:%M" )
         self.canvas.itemconfig( self.text , text = clockt )
-        root.after( 60000 , background.clock( self ) )
+        print(clockt)
+        root.after( 60000 , self.clock )
 
 
 class todoli():
@@ -100,23 +102,23 @@ class todoconf():
 
 
 
-cfg = cfg.ConfigParser()
+cfg = configparser.ConfigParser()
 
-try :
-    cfgf = open( "config.ini" , "w" , "UTF-8" )
+try:
+    cfgf = open( "config.ini" , "r" , "UTF-8" )
 
-except :
-    wc = open( "config.cfg" , "w" , encoding = "UTF-8" )
+except:
+    wc = open( "config.ini" , "w" , encoding = "UTF-8" )
     wc.close()
     cfg.read( "config.ini" )
     cfg.add_section( "Resolution" )
     cfg.set( "Resolution" , "ResX" , "1366" )
-    cfg.set( "Resolution" , "ResY" , "768" )  
+    cfg.set( "Resolution" , "ResY" , "768" )
     cfg.add_section( "WallPaper" )
     cfg.set( "WallPaper" , "WallPaperFN" , "WallPaper.png" )
-    cfg.write(open( "config.cfg" , "w" ))
+    cfg.write(open( "config.ini" , "w" ))
 
-else :
+else:
     cfg.read( "config.ini" )
 
 for k in cfg.keys():
@@ -128,5 +130,13 @@ root.resizable( width = False , height = False )
 root.geometry( resx + "x" + resy + "-0+0" )
 
 root.overrideredirect( False )
+
+
+
+bg = background()
+bg.wallpaperplace()
+bg.clock()
+
+
 
 root.mainloop()
